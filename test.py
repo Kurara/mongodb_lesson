@@ -16,18 +16,45 @@ class TestMongoDB(unittest.TestCase):
     #     processor = TextProcessor()
     #     processor.read_csv(filepath)
 
-    def test_insert_cliente(self):
-        
+    def test_insert_reclamo(self):
         import datetime
-        data = {
-            "Nome": "Primo cliente",
-            "Indirizzo": "Strada principale",
-            "Eta": 34,
-            "Data_registrazione": datetime.datetime.now().isoformat()
+        reclamo = {
+            "Data_ricevuta": datetime.datetime.now(),
+            "Prodotto": "Prodotto esempio",
+            "Sottoprodotto": "Sottoprodotto esempio",
+            "Problema": "Cosa da sistemare",
+            "Sottoproblema": None, 
+            "Narrativa": "blòah blahy balhy",
+            "Risposta_publica": "tutto apposto",
+            "Ditta": {
+                "Paese": "Italia",
+                "Cap": "34601",
+                "Tags": []
+            },
+            "consenso_cliente": True,
+            "Inviato_via": "mail",
+            "Data_invio": "2020-02-18",
+            "Risposta_cliente": "Vabeh",
+            "Risposta_tempestiva": False,
+            "Cliente_contestato": True,
+            "Cliente": {
+                "Nome": "Fausto",
+                "Eta": 24,
+                "Data_registrazione": "2019-12-05",
+                "Indirizzi": [
+                    {"strada": "una", "numero": 45},
+                    {"strada": "due", "numero": 1}
+                ]
+            }
         }
-        self.conection.insert("complaints", data)
-        result = self.conection.cnx['complaints'].find_one()
-        self.conection.disconect_db()
+        inserted_doc = self.conection.insert("complaints", reclamo)
+        # result = self.conection.cnx['complaints'].find_one()
+
+    def test_erase_data(self):
+        all_doc = self.conection.select("complaints")
+
+        for doc in all_doc:
+            self.conection.delete("complaints", query={'_id':doc.get('_id')})
 
     def tearDown(self):
         try:
