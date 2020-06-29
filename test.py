@@ -56,6 +56,19 @@ class TestMongoDB(unittest.TestCase):
         for doc in all_doc:
             self.conection.delete("complaints", query={'_id':doc.get('_id')})
 
+    def test_select_equals(self):
+        all_doc = self.conection.select("complaints")
+
+        documents = self.conection.select("complaints", {"Inviato_via": {"$eq": "Web"}})
+        self.assertNotEqual(len(all_doc), len(documents))
+
+        
+    def test_select_start_S(self):
+        all_doc = self.conection.select("complaints")
+
+        documents = self.conection.select("complaints", {"Nome": {"$regex": "S.*"}})
+        self.assertNotEqual(all_doc.count(), documents.count())
+
     def tearDown(self):
         try:
             self.conection.disconect_db()
